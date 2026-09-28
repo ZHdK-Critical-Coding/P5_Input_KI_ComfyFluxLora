@@ -10,8 +10,19 @@ anzusteuern.
 
 ## Installation
 
-Voraussetzungen: eine ComfyUI-Instanz, die vom eigenen Computer aus
-erreichbar ist (meist im lokalen Netz, mit GPU). Der Workflow
+Voraussetzungen: ein laufender ComfyUI-Server (siehe Server).
+
+Bibliotheken (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (eingebunden,
+nicht verwendet), [p5.comfyui-helper](https://github.com/gohai/p5.comfyui-helper)
+von Gottfried Haider.
+
+## Server
+
+Braucht einen [ComfyUI](https://github.com/comfyanonymous/ComfyUI)-Server
+auf Port 8188, meist auf einem Rechner mit GPU – auf demselben Computer
+oder auf einem anderen Rechner im Netzwerk. Vor dem Sketch starten; damit
+andere Rechner und der Browser zugreifen können, mit
+`python main.py --listen --enable-cors-header` starten. Der Workflow
 `workflows/Flux-Lora-Simple-Beocom2000.ai.json` erwartet:
 
 - UNet `FLUX1/flux_dev_fp8_scaled_diffusion_model.safetensors`
@@ -21,20 +32,17 @@ erreichbar ist (meist im lokalen Netz, mit GPU). Der Workflow
 - den Custom Node **CR SDXL Aspect Ratio** (ComfyUI Comfyroll Nodes)
 - den Node **SaveImageWebsocket** (in ComfyUI enthalten)
 
-Die Adresse des ComfyUI-Servers in der Konstante `instance` oben in
-`sketch.js` eintragen (Standard `http://192.168.2.8:8188`).
-
-Bibliotheken (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (eingebunden,
-nicht verwendet), [p5.comfyui-helper](https://github.com/gohai/p5.comfyui-helper)
-von Gottfried Haider.
+Die Adresse des Servers in der Konstante `instance` oben in `sketch.js`
+eintragen (Standard `http://192.168.2.8:8188`).
 
 ## Ausführen
 
 1. Den Ordner in Visual Studio Code öffnen und Live Server starten (in der
    Statusleiste auf **Go Live** klicken).
-2. Der Browser greift Cross-Origin auf ComfyUI zu. Entweder ComfyUI mit
-   `--enable-cors-header` starten oder die Debugger-Konfiguration
-   **Launch Chrome (no Security)** verwenden (Panel Run and Debug).
+2. Der Browser greift Cross-Origin auf ComfyUI zu. Ist ComfyUI nicht mit
+   `--enable-cors-header` gestartet (siehe Server), die
+   Debugger-Konfiguration **Launch Chrome (no Security)** verwenden (Panel
+   Run and Debug).
 3. Den Prompt im Textfeld anpassen und auf **generate** klicken. Während
    das Bild generiert wird, pulsiert ein roter Punkt.
 

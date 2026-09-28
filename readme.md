@@ -9,8 +9,19 @@ sketch.
 
 ## Installation
 
-Requirements: a ComfyUI instance reachable from your computer (usually on
-the local network, with a GPU). The workflow
+Requirements: a running ComfyUI server (see Server).
+
+Libraries (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (included, not
+used), [p5.comfyui-helper](https://github.com/gohai/p5.comfyui-helper) by
+Gottfried Haider.
+
+## Server
+
+Needs a [ComfyUI](https://github.com/comfyanonymous/ComfyUI) server on port
+8188, usually on a machine with a GPU — on the same computer or on another
+machine in the network. Start it before the sketch; to allow access from
+other machines and from the browser, start it with
+`python main.py --listen --enable-cors-header`. The workflow
 `workflows/Flux-Lora-Simple-Beocom2000.ai.json` expects:
 
 - UNet `FLUX1/flux_dev_fp8_scaled_diffusion_model.safetensors`
@@ -20,19 +31,15 @@ the local network, with a GPU). The workflow
 - the custom node **CR SDXL Aspect Ratio** (ComfyUI Comfyroll nodes)
 - the **SaveImageWebsocket** node (included with ComfyUI)
 
-Set the address of your ComfyUI server in the `instance` constant at the
-top of `sketch.js` (default `http://192.168.2.8:8188`).
-
-Libraries (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (included, not
-used), [p5.comfyui-helper](https://github.com/gohai/p5.comfyui-helper) by
-Gottfried Haider.
+Set the server address in the `instance` constant at the top of
+`sketch.js` (default `http://192.168.2.8:8188`).
 
 ## How to Run
 
 1. Open the folder in Visual Studio Code and start Live Server (click
    **Go Live** in the status bar).
-2. The browser calls ComfyUI cross-origin. Either start ComfyUI with
-   `--enable-cors-header`, or use the debugger configuration
+2. The browser calls ComfyUI cross-origin. If ComfyUI isn't started with
+   `--enable-cors-header` (see Server), use the debugger configuration
    **Launch Chrome (no Security)** (Run and Debug panel).
 3. Edit the prompt in the text field and press **generate**. A pulsing red
    dot is shown while the image is being generated.
