@@ -47,7 +47,7 @@ function setup() {
 // ============================================
 // Function to request image generation
 // ============================================
-function requestImage() {
+async function requestImage() {
   if (running) return; // Prevent multiple runs at the same time
 
   // Workflow can be modified before running
@@ -61,10 +61,13 @@ function requestImage() {
     workflow[6].inputs.text = prompt.value();
 
     // Run the workflow via ComfyUI helper
-    comfy.run(workflow, gotImage);
+    // comfy.run() is async: `await` it, so errors (e.g. server not reachable)
+    // end up in the catch block below
+    await comfy.run(workflow, gotImage);
 
   } catch (err) {
     // If there’s an error, reset running flag
+    console.warn("ComfyUI error:", err);
     running = false;
   }
 }
@@ -76,10 +79,10 @@ function gotImage(results, err) {
   running = false; // Reset running flag
 
   // `results` is an array of outputs from the workflow
-  console.log("gotImage", results);
+  console.log("gotImage", results, err);
 
   // Load the first generated image to display on canvas
-  if (results.length > 0) {
+  if (results && results.length > 0) {
     resImg = loadImage(results[0].src);
   }
 

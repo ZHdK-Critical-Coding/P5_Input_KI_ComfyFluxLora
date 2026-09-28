@@ -21,19 +21,22 @@ erreichbar ist (meist im lokalen Netz, mit GPU). Der Workflow
 - den Custom Node **CR SDXL Aspect Ratio** (ComfyUI Comfyroll Nodes)
 - den Node **SaveImageWebsocket** (in ComfyUI enthalten)
 
-1. Die Adresse des ComfyUI-Servers in der Konstante `instance` oben in
-   `sketch.js` eintragen (Standard `http://192.168.2.8:8188`).
-2. Den Ordner in Visual Studio Code öffnen und Live Server starten (in der
-   Statusleiste auf **Go Live** klicken).
-3. Der Browser greift Cross-Origin auf ComfyUI zu. Entweder ComfyUI mit
-   `--enable-cors-header` starten oder die Debugger-Konfiguration
-   **Launch Chrome (no Security)** verwenden (Panel Run and Debug).
-4. Den Prompt im Textfeld anpassen und auf **generate** klicken. Während
-   das Bild generiert wird, pulsiert ein roter Punkt.
+Die Adresse des ComfyUI-Servers in der Konstante `instance` oben in
+`sketch.js` eintragen (Standard `http://192.168.2.8:8188`).
 
 Bibliotheken (in `libraries/`): p5.js 1.10.0, p5.sound 1.0.1 (eingebunden,
 nicht verwendet), [p5.comfyui-helper](https://github.com/gohai/p5.comfyui-helper)
 von Gottfried Haider.
+
+## Ausführen
+
+1. Den Ordner in Visual Studio Code öffnen und Live Server starten (in der
+   Statusleiste auf **Go Live** klicken).
+2. Der Browser greift Cross-Origin auf ComfyUI zu. Entweder ComfyUI mit
+   `--enable-cors-header` starten oder die Debugger-Konfiguration
+   **Launch Chrome (no Security)** verwenden (Panel Run and Debug).
+3. Den Prompt im Textfeld anpassen und auf **generate** klicken. Während
+   das Bild generiert wird, pulsiert ein roter Punkt.
 
 ## Coding-Hilfe
 
@@ -47,15 +50,20 @@ von Gottfried Haider.
   **generate**.
 - **`requestImage()`**: schreibt einen zufälligen Seed in Node `25`
   (RandomNoise) und den Prompt in Node `6` (CLIPTextEncode) und ruft dann
-  `comfy.run(workflow, gotImage)` auf. Andere Nodes lassen sich hier gleich
-  ändern, z. B. die Steps in Node `17`, die LoRA-Stärke in Node `72`, die
-  Bildgrösse in Node `85`. Bei einem eigenen Workflow die Node-Nummern
-  anpassen.
+  `await comfy.run(workflow, gotImage)` auf. Schlägt die Anfrage fehl (z. B.
+  Server nicht erreichbar), wird der Fehler geloggt und `running`
+  zurückgesetzt, sodass man es erneut versuchen kann. Andere Nodes lassen
+  sich hier gleich ändern, z. B. die Steps in Node `17`, die LoRA-Stärke in
+  Node `72`, die Bildgrösse in Node `85` (`width`/`height`; `aspect_ratio`
+  steht auf `custom`, damit diese Werte gelten – die Standardgrösse
+  1024 × 1024 passt zur quadratischen Zeichenfläche). Bei einem eigenen
+  Workflow die Node-Nummern anpassen.
 - **`libraries/p5.comfyui-helper.js`**: ersetzt `SaveImage` durch
   `SaveImageWebsocket`, stellt den Workflow über `/prompt` in die
   Warteschlange und sammelt die Ergebnisbilder aus dem WebSocket als
   Blob-URLs.
-- **`gotImage(results, err)`**: lädt das erste Ergebnis in `resImg`. Wer
+- **`gotImage(results, err)`**: lädt das erste Ergebnis in `resImg` (falls
+  vorhanden; bei einem Fehler ist `results` leer und `err` wird geloggt). Wer
   `requestImage()` am Ende einkommentiert, generiert Bilder in einer
   Schleife.
 - **`draw()`**: zeichnet `resImg` skaliert auf die Zeichenfläche und den
